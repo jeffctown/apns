@@ -28,10 +28,36 @@ let package = Package(
 
 ## Usage
 
-#### Initialization
+#### Encoding APNS Payloads
 
 ```swift
-import APNS
+let payload = PayloadBuilder { builder in
+	builder.title = "APNS Title!"
+	builder.body = "Something Exciting Just Happened!"
+}.build()
+let data = try JSONEncoder().encode(payload)
 ```
 
-#### Next Section
+#### Decoding APNS Payloads
+
+```swift 
+let payloadString = """
+                    {
+                        "aps" : {
+                            "category" : "NEW_MESSAGE_CATEGORY",
+                            "alert" : {
+                                "title" : "Game Request",
+                                "body" : "Bob wants to play poker",
+                                "action-loc-key" : "PLAY",
+                            },
+                            "content-available" : 1,
+                            "badge" : 5,
+                            "sound" : "bingbong.aiff",
+                            "mutable-content": 1
+                        }
+                    }
+                    """
+let payloadData = payloadString.data(using: .utf8)!
+let payload = try JSONDecoder().decode(Payload.self, from: payloadData)
+```
+
