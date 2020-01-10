@@ -5,7 +5,7 @@ final class APNSTests: XCTestCase {
     
     static let testPayload = "TestPayload"
     
-    func testPayloadEncoding() {
+    func testPayloadDecoding() {
         let testResource = try! Resource(name: APNSTests.testPayload, type: "json")
         let testData = try! Data(contentsOf: testResource.url)
         let decoder = JSONDecoder()
