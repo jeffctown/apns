@@ -21,7 +21,7 @@ final class APNSTests: XCTestCase {
     }
     
     static var allTests = [
-        ("testExample", testPayloadEncoding),
+        ("testExample", testPayloadDecoding),
     ]
 }
 
