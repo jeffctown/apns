@@ -20,30 +20,22 @@ final class APNSTests: XCTestCase {
         XCTAssert(testPayload.aps.category == "NEW_MESSAGE_CATEGORY")
     }
     
-    func testStuff() {
-        let payloadString = """
-                            {
-                                "aps" : {
-                                    "category" : "NEW_MESSAGE_CATEGORY",
-                                    "alert" : {
-                                        "title" : "Game Request",
-                                        "body" : "Bob wants to play poker",
-                                        "action-loc-key" : "PLAY",
-                                    },
-                                    "content-available" : 1,
-                                    "badge" : 5,
-                                    "sound" : "bingbong.aiff",
-                                    "mutable-content": 1
-                                }
-                            }
-                            """
-        let payloadData = payloadString.data(using: .utf8)!
-        let payload = try! JSONDecoder().decode(Payload.self, from: payloadData)
-        print(payload)
+    func testPayloadEncoding() throws {
+        
+        let expectedPayload = """
+        {"aps":{"alert":{"title":"Game Request","body":"Bob wants to play poker"},"mutable-content":0,"content-available":0},"extra":{}}
+        """
+        let payload = PayloadBuilder { builder in
+            builder.title = "Game Request"
+            builder.body = "Bob wants to play poker"
+        }.build()
+        let payloadData = try JSONEncoder().encode(payload)
+        let payloadString = String(data: payloadData, encoding: .utf8)
+        XCTAssertEqual(payloadString, expectedPayload)
     }
 
     static var allTests = [
-        ("testExample", testPayloadDecoding),
+        ("testPayloadDecoding", testPayloadDecoding), ("testPayloadEncoding", testPayloadEncoding)
     ]
 }
 
