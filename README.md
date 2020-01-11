@@ -1,8 +1,8 @@
 # APNS
 
-![Platform](https://img.shields.io/badge/platforms-iOS%2013.0%20%7C%20macOS%2010.15%20%7C%20tvOS%2013.0%20%7C%20watchOS%206.0-blue.svg)
-
 APNS is a simple Package to represent Apple Push Notification Service model objects.
+
+![Platform](https://img.shields.io/badge/platforms-iOS%2013.0%20%7C%20macOS%2010.15%20%7C%20tvOS%2013.0%20%7C%20watchOS%206.0-blue.svg)
 
 | Build Status
 | --------------| 
