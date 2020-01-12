@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct APNSErrorResponse: Codable {
-    var reason: APNSError
+public struct APNSErrorResponse: Codable {
+    public var reason: APNSError
 }
