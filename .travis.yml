@@ -8,4 +8,5 @@ matrix:
       language: objective-c
       osx_image: xcode11.3
       script:
+	- brew install libressl
         - swift test
