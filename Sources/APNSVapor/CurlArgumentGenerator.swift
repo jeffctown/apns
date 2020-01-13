@@ -20,7 +20,7 @@ struct CurlArgumentGenerator {
         }
         
         let remoteURL = device.environment == .release ? Self.releaseUrl : Self.sandboxUrl
-        let arguments = ["-d", "\(jsonString)", "-H", "apns-topic:\(certificate.bundleIdentifier)", "-H", "Content-Type:application/json", "--http2", "--cert", "\(certificate.path):\(certificate.password)", remoteURL + device.token]
+        let arguments = ["-d", "\(jsonString)", "-H", "apns-topic:\(certificate.bundleIdentifier)","-H","apns-push-type:alert", "-H", "Content-Type:application/json", "--http2", "--cert", "\(certificate.path):\(certificate.password)", remoteURL + device.token]
         
         return arguments
     }
