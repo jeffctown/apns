@@ -7,8 +7,8 @@ let package = Package(
     name: "APNS",
     products: [
         .library(name: "APNS", targets: ["APNS"]),
-        .library(name: "APNSFluent", targets: ["APNSFluent"]),
-        .library(name: "APNSVapor", targets: ["APNSVapor"]),
+        .library(name: "APNSFluent", targets: ["APNS", "APNSFluent"]),
+        .library(name: "APNSVapor", targets: ["APNS","APNSFluent","APNSVapor"]),
     ],
     dependencies: [
         // 💧 A server-side Swift web framework.
