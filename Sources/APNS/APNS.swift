@@ -12,4 +12,13 @@ public struct APNS {
     public enum Environment: Int, Codable {
         case development, release
     }
+    
+    public enum PushType: Int, Codable {
+        case alert
+        case background
+        case complication
+        case voip
+        case mdm
+        case fileprovider
+    }
 }

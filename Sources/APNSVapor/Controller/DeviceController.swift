@@ -15,6 +15,7 @@ public final class DeviceController {
                     existingDevice.type = device.type
                     existingDevice.environment = device.environment
                     existingDevice.bundleIdentifier = device.bundleIdentifier
+                    existingDevice.pushType = device.pushType
                     return existingDevice.update(on: req)
                 } else {
                     return device.save(on: req)
