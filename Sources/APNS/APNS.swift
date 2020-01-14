@@ -20,5 +20,16 @@ public struct APNS {
         case voip
         case mdm
         case fileprovider
+        
+        public var string: String {
+            switch self {
+            case .alert: return "alert"
+            case .background: return "background"
+            case .complication: return "complication"
+            case .voip: return "voip"
+            case .mdm: return "mdm"
+            case .fileprovider: return "fileprovider"
+            }
+        }
     }
 }
