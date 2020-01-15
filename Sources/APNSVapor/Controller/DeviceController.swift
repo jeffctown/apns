@@ -18,7 +18,7 @@ public final class DeviceController {
                     existingDevice.pushType = device.pushType
                     return existingDevice.update(on: req)
                 } else {
-                    return device.save(on: req)
+                    return device.create(on: req)// save(on: req)
                 }
             }
         }
