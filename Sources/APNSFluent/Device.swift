@@ -14,5 +14,5 @@ public extension Device {
     }
 }
 
-extension Device: SQLiteModel { }
+extension Device: SQLiteStringModel { }
 extension Device: Migration { }

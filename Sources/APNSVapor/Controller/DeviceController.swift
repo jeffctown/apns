@@ -8,7 +8,7 @@ public final class DeviceController {
     public func create(_ req: Request) throws -> Future<Device> {
         return try req.content.decode(Device.self).flatMap(to: Device.self) { device in
             return Device.query(on: req)
-                .filter(\Device.token, .equal, device.token)
+                .filter(\Device.id, .equal, device.id)
                 .first()
                 .flatMap { (existing) -> EventLoopFuture<Device> in
                 if let existingDevice = existing {

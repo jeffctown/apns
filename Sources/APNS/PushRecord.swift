@@ -17,7 +17,7 @@ public final class PushRecord: Codable {
     // MARK: - Properties
     
     public var id: Int?
-    public var deviceID: Int
+    public var deviceID: String
     public var createdAt: Date?
     public var updatedAt: Date?
     public var deletedAt: Date?
@@ -27,18 +27,18 @@ public final class PushRecord: Codable {
     
     // MARK: - Initialization
     
-    public init(payload: String, status: DeliveryStatus, deviceID: Int, date: Date = Date()) {
+    public init(payload: String, status: DeliveryStatus, deviceToken: String, date: Date = Date()) {
         self.payload = payload
         self.status = status
-        self.deviceID = deviceID
+        self.deviceID = deviceToken
         self.createdAt = date
     }
     
-    public init(payload: String, error: APNSError, deviceID: Int, date: Date = Date()) {
+    public init(payload: String, error: APNSError, deviceToken: String, date: Date = Date()) {
         self.payload = payload
         self.status = .deliveryFailed
         self.error = error.rawValue
-        self.deviceID = deviceID
+        self.deviceID = deviceToken
         self.createdAt = date
     }
     

@@ -53,9 +53,14 @@ public struct APNSVapor {
             logger.info("Sending Push to \(devices.count) devices.")
             logger.info("Payload: \(payload)")
             return devices.compactMap {
-                logger.info("Pushing to \($0.token)")
+                guard let id = $0.id else {
+                    print("Error: No Device identifier to push.")
+                    return nil
+                }
+                
+                logger.info("Pushing to \(id)")
                 do {
-                    return try self.pushToDevice($0, payload, req)
+                    return try self.pushToDevice(token: id, device: $0, data: payload, req: req)
                 } catch {
                     logger.error("Error Pushing to Device Token \(error)")
                 }
@@ -72,12 +77,12 @@ public struct APNSVapor {
         return cert
     }
         
-    public func pushToDevice(_ device: Device, _ data: Data, _ req: Request) throws -> Future<PushRecord> {
+    public func pushToDevice(token: String, device: Device, data: Data, req: Request) throws -> Future<PushRecord> {
         let logger = try req.make(Logger.self)
         let shell = try req.make(Shell.self)
         let argumentGenerator = CurlArgumentGenerator()
         let cert = try certificate(for: device.bundleIdentifier, environment: device.environment)
-        let arguments = try argumentGenerator.generate(data: data, device: device, certificate: cert)
+        let arguments = try argumentGenerator.generate(data: data, device: device, token: token, certificate: cert)
         let readableArguments = arguments.joined(separator: " ")
         logger.debug(readableArguments)
         
@@ -87,7 +92,7 @@ public struct APNSVapor {
                 print("ResponseData: \(responseData.count) \(responseData)")
                 
                 guard responseData.count > 0 else {
-                    let record = PushRecord(payload: readableArguments, status: .delivered, deviceID: device.id!)
+                    let record = PushRecord(payload: readableArguments, status: .delivered, deviceToken: device.id!)
                     return record.save(on: req)
                 }
                 
@@ -95,12 +100,12 @@ public struct APNSVapor {
                 let errorResponse = try decoder.decode(APNSErrorResponse.self, from: responseData)
                 let error = errorResponse.reason
                 logger.error(error.rawValue)
-                let record = PushRecord(payload: readableArguments, error: error, deviceID: device.id!)
+                let record = PushRecord(payload: readableArguments, error: error, deviceToken: device.id!)
                 return record.save(on: req)
             } catch _ {
                 let errorMessage = String(data: data, encoding: .utf8)
                 logger.error("Unknown Error Parsing Curl Error. \(errorMessage ?? "nil") \(data.count)")
-                let record = PushRecord(payload: readableArguments, error: .unknown, deviceID: device.id!)
+                let record = PushRecord(payload: readableArguments, error: .unknown, deviceToken: device.id!)
                 return record.save(on: req)
             }
         }
