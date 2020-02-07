@@ -2,6 +2,11 @@ import APNS
 import APNSFluent
 import Vapor
 
+public protocol APNSVaporEncodable {
+    func payload() -> Payload
+    func payloadForComplication() -> Payload
+}
+
 public struct APNSVapor {
     
     public struct Certificate {
@@ -47,11 +52,10 @@ public struct APNSVapor {
         }
     }
     
-    public func push(_ req: Request, _ payload: Data) throws -> Future<[PushRecord]> {
+    public func push(req: Request, encodable: APNSVaporEncodable) throws -> Future<[PushRecord]> {
         let logger = try req.make(Logger.self)
         return Device.query(on: req).all().flatMap(to: [PushRecord].self) { devices in
             logger.info("Sending Push to \(devices.count) devices.")
-            logger.info("Payload: \(payload)")
             return devices.compactMap {
                 guard let id = $0.id else {
                     print("Error: No Device identifier to push.")
@@ -60,7 +64,17 @@ public struct APNSVapor {
                 
                 logger.info("Pushing to \(id)")
                 do {
-                    return try self.pushToDevice(token: id, device: $0, data: payload, req: req)
+                    if $0.bundleIdentifier.hasSuffix(".complication") {
+                        let complicationPayload = encodable.payloadForComplication()
+                        let payload = try JSONEncoder().encode(complicationPayload)
+                        logger.info("Complication Payload: \(payload)")
+                        return try self.pushToDevice(token: id, device: $0, data: payload, req: req)
+                    } else {
+                        let notificationPayload = encodable.payload()
+                        let payload = try JSONEncoder().encode(notificationPayload)
+                        logger.info("Notification Payload: \(payload)")
+                        return try self.pushToDevice(token: id, device: $0, data: payload, req: req)
+                    }
                 } catch {
                     logger.error("Error Pushing to Device Token \(error)")
                 }
