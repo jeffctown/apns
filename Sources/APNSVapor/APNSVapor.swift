@@ -4,7 +4,6 @@ import Vapor
 
 public protocol APNSVaporEncodable {
     func payload() -> Payload
-    func payloadForComplication() -> Payload
 }
 
 public struct APNSVapor {
@@ -64,17 +63,10 @@ public struct APNSVapor {
                 
                 logger.info("Pushing to \(id)")
                 do {
-                    if $0.bundleIdentifier.hasSuffix(".complication") {
-                        let complicationPayload = encodable.payloadForComplication()
-                        let payload = try JSONEncoder().encode(complicationPayload)
-                        logger.info("Complication Payload: \(payload)")
-                        return try self.pushToDevice(token: id, device: $0, data: payload, req: req)
-                    } else {
-                        let notificationPayload = encodable.payload()
-                        let payload = try JSONEncoder().encode(notificationPayload)
-                        logger.info("Notification Payload: \(payload)")
-                        return try self.pushToDevice(token: id, device: $0, data: payload, req: req)
-                    }
+                    let notificationPayload = encodable.payload()
+                    let payload = try JSONEncoder().encode(notificationPayload)
+                    logger.info("Notification Payload: \(payload)")
+                    return try self.pushToDevice(token: id, device: $0, data: payload, req: req)                
                 } catch {
                     logger.error("Error Pushing to Device Token \(error)")
                 }
